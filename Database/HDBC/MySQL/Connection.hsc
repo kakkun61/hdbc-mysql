@@ -981,11 +981,11 @@ mysql_autocommit =
     mysql_autocommit_
 
 mysql_query :: Ptr MYSQL -> CString -> IO CInt
-mysql_query =
+mysql_query mysql query =
 #if DEBUG
-  trace "mysql_query"
+  trace ("mysql_query " ++ (show mysql) ++ " " ++ (unsafePerformIO $ peekCString query))
 #endif
-    mysql_query_
+    (mysql_query_ mysql query)
 
 -- Here are all the FFI imports.
 
