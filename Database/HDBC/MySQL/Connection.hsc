@@ -23,13 +23,10 @@ import qualified Database.HDBC.Types as Types
 import Database.HDBC.ColTypes as ColTypes
 import Database.HDBC (throwSqlError)
 
-#if DEBUG
 import Debug.Trace
 import System.IO
-import System.IO.Unsafe
-#endif
 
-#include <mysql.h>
+#include <mysql/mysql.h>
 
 {- | Connection information to use with connectMySQL.
 
@@ -812,7 +809,7 @@ mysql_get_client_info = do
   hPutStrLn stderr "mysql_get_client_info"
   cr <- mysql_get_client_info_
   r <- peekCString cr
-  hPutStrLn stderr $ "\t→ " ++ (show r)
+  hPutStrLn stderr $ "\t? " ++ (show r)
   return cr
 
 mysql_get_server_info :: Ptr MYSQL -> IO CString
@@ -820,28 +817,28 @@ mysql_get_server_info mysql = do
   hPutStrLn stderr $ "mysql_server_info " ++ (show mysql)
   cr <- mysql_get_server_info_ mysql
   r <- peekCString cr
-  hPutStrLn stderr $ "\t→ " ++ (show r)
+  hPutStrLn stderr $ "\t? " ++ (show r)
   return cr
 
 mysql_get_proto_info :: Ptr MYSQL -> IO CUInt
 mysql_get_proto_info mysql = do
   hPutStrLn stderr $ "mysql_get_proto_info " ++ (show mysql)
   cr <- mysql_get_proto_info_ mysql
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_init :: Ptr MYSQL -> IO (Ptr MYSQL)
 mysql_init mysql = do
   hPutStrLn stderr $ "mysql_init " ++ (show mysql)
   cr <- mysql_init_ mysql
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_options :: Ptr MYSQL -> CInt -> Ptr () -> IO CInt
 mysql_options mysql a1 a2 = do
   hPutStrLn stderr $ "mysql_option " ++ (show mysql) ++ " " ++ (show a1) ++ " " ++ (show a2)
   cr <- mysql_options_ mysql a1 a2
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_real_connect :: Ptr MYSQL -> CString -> CString -> CString -> CString -> CInt -> CString -> IO (Ptr MYSQL)
@@ -853,7 +850,7 @@ mysql_real_connect mysql a1 a2 a3 a4 a5 a6 = do
   s6 <- peekCString a6
   hPutStrLn stderr $ "mysql_real_connect " ++ (show mysql) ++ " " ++ (show s1) ++ " " ++ (show s2) ++ " " ++ (show s3) ++ " " ++ (show s4) ++ " " ++ (show a5) ++ " " ++ (show s6)
   cr <- mysql_real_connect_ mysql a1 a2 a3 a4 a5 a6
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_close :: FunPtr (Ptr MYSQL -> IO ())
@@ -864,7 +861,7 @@ mysql_stmt_init :: Ptr MYSQL -> IO (Ptr MYSQL_STMT)
 mysql_stmt_init mysql = do
   hPutStrLn stderr $ "mysql_stmt_init " ++ (show mysql)
   cr <- mysql_stmt_init_ mysql
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_stmt_prepare :: Ptr MYSQL_STMT -> CString -> CInt -> IO CInt
@@ -872,91 +869,91 @@ mysql_stmt_prepare mysql a1 a2 = do
   s1 <- peekCString a1
   hPutStrLn stderr $ "mysql_stmt_prepare " ++ (show mysql) ++ " " ++ (show s1) ++ " " ++ (show a2)
   cr <- mysql_stmt_prepare_ mysql a1 a2
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_stmt_result_metadata :: Ptr MYSQL_STMT -> IO (Ptr MYSQL_RES)
 mysql_stmt_result_metadata mysql = do
   hPutStrLn stderr $ "mysql_stmt_result_metadata " ++ (show mysql)
   cr <- mysql_stmt_result_metadata_ mysql
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_stmt_bind_param :: Ptr MYSQL_STMT -> Ptr MYSQL_BIND -> IO CChar
 mysql_stmt_bind_param mysql p = do
   hPutStrLn stderr $ "mysql_stmt_bind_param " ++ (show mysql) ++ " " ++ (show p)
   cr <- mysql_stmt_bind_param_ mysql p
-  hPutStrLn stderr $ "\t→ " ++ (show $ castCCharToChar cr)
+  hPutStrLn stderr $ "\t? " ++ (show $ castCCharToChar cr)
   return cr
 
 mysql_stmt_bind_result :: Ptr MYSQL_STMT -> Ptr MYSQL_BIND -> IO CChar
 mysql_stmt_bind_result mysql p = do
   hPutStrLn stderr $ "mysql_stmt_bind_result " ++ (show mysql) ++ " " ++ (show p)
   cr <- mysql_stmt_bind_result_ mysql p
-  hPutStrLn stderr $ "\t→ " ++ (show $ castCCharToChar cr)
+  hPutStrLn stderr $ "\t? " ++ (show $ castCCharToChar cr)
   return cr
 
 mysql_stmt_param_count :: Ptr MYSQL_STMT -> IO CULong
 mysql_stmt_param_count mysql = do
   hPutStrLn stderr $ "mysql_stmt_param_count " ++ (show mysql)
   cr <- mysql_stmt_param_count_ mysql
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_free_result :: Ptr MYSQL_RES -> IO ()
 mysql_free_result p = do
   hPutStrLn stderr $ "mysql_free_result " ++ (show p)
   cr <- mysql_free_result_ p
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_stmt_execute :: Ptr MYSQL_STMT -> IO CInt
 mysql_stmt_execute p = do
   hPutStrLn stderr $ "mysql_stmt_execute " ++ (show p)
   cr <- mysql_stmt_execute_ p
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_stmt_affected_rows :: Ptr MYSQL_STMT -> IO CULLong
 mysql_stmt_affected_rows p = do
   hPutStrLn stderr $ "mysql_stmt_affected_rows " ++ (show p)
   cr <- mysql_stmt_affected_rows_ p
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_fetch_field :: Ptr MYSQL_RES -> IO (Ptr MYSQL_FIELD)
 mysql_fetch_field p = do
   hPutStrLn stderr $ "mysql_fetch_field " ++ (show p)
   cr <- mysql_fetch_field_ p
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_stmt_fetch :: Ptr MYSQL_STMT -> IO CInt
 mysql_stmt_fetch p = do
   hPutStrLn stderr $ "mysql_stmt_fetch " ++ (show p)
   cr <- mysql_stmt_fetch_ p
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_stmt_fetch_column :: Ptr MYSQL_STMT -> Ptr MYSQL_BIND -> CUInt -> CULong -> IO CInt
 mysql_stmt_fetch_column p1 p2 c3 c4 = do
   hPutStrLn stderr $ "mysql_stmt_fetch_column " ++ (show p1) ++ " " ++ (show p2) ++ " " ++ (show c3) ++ " " ++ (show c4)
   cr <- mysql_stmt_fetch_column_ p1 p2 c3 c4
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_stmt_close :: Ptr MYSQL_STMT -> IO ()
 mysql_stmt_close p = do
   hPutStrLn stderr $ "mysql_stmt_close " ++ (show p)
   cr <- mysql_stmt_close_ p
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_stmt_errno :: Ptr MYSQL_STMT -> IO CInt
 mysql_stmt_errno p = do
   hPutStrLn stderr $ "mysql_stmt_errno " ++ (show p)
   cr <- mysql_stmt_errno_ p
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_stmt_error :: Ptr MYSQL_STMT -> IO CString
@@ -964,14 +961,14 @@ mysql_stmt_error p = do
   hPutStrLn stderr $ "mysql_stmt_error " ++ (show p)
   cr <- mysql_stmt_error_ p
   r <- peekCString cr
-  hPutStrLn stderr $ "\t→ " ++ (show r)
+  hPutStrLn stderr $ "\t? " ++ (show r)
   return cr
 
 mysql_errno :: Ptr MYSQL -> IO CInt
 mysql_errno mysql = do
   hPutStrLn stderr $ "mysql_errno " ++ (show mysql)
   cr <- mysql_errno_ mysql
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 mysql_error :: Ptr MYSQL -> IO CString
@@ -979,14 +976,14 @@ mysql_error mysql = do
   hPutStrLn stderr $ "mysql_error " ++ (show mysql)
   cr <- mysql_error_ mysql
   r <- peekCString cr
-  hPutStrLn stderr $ "\t→ " ++ (show r)
+  hPutStrLn stderr $ "\t? " ++ (show r)
   return cr
 
 mysql_autocommit :: Ptr MYSQL -> CChar -> IO CChar
 mysql_autocommit mysql char = do
   hPutStrLn stderr $ "mysql_autocommit " ++ (show mysql) ++ " " ++ (show $ castCCharToChar char)
   cr <- mysql_autocommit_ mysql char
-  hPutStrLn stderr $ "\t→ " ++ (show $ castCCharToChar cr)
+  hPutStrLn stderr $ "\t? " ++ (show $ castCCharToChar cr)
   return cr
 
 mysql_query :: Ptr MYSQL -> CString -> IO CInt
@@ -994,31 +991,31 @@ mysql_query mysql query = do
   q <- peekCString query
   hPutStrLn stderr $ "mysql_query " ++ (show mysql) ++ " " ++ (show q)
   cr <- mysql_query_ mysql query
-  hPutStrLn stderr $ "\t→ " ++ (show cr)
+  hPutStrLn stderr $ "\t? " ++ (show cr)
   return cr
 
 -- Here are all the FFI imports.
 
-foreign import ccall unsafe mysql_get_client_info
+foreign import ccall unsafe "mysql_get_client_info" mysql_get_client_info_
     :: IO CString
 
-foreign import ccall unsafe mysql_get_server_info
+foreign import ccall unsafe "mysql_get_server_info" mysql_get_server_info_
     :: Ptr MYSQL -> IO CString
 
-foreign import ccall unsafe mysql_get_proto_info
+foreign import ccall unsafe "mysql_get_proto_info" mysql_get_proto_info_
     :: Ptr MYSQL -> IO CUInt
 
-foreign import ccall unsafe mysql_init
+foreign import ccall unsafe "mysql_init" mysql_init_
  :: Ptr MYSQL
  -> IO (Ptr MYSQL)
 
-foreign import ccall unsafe mysql_options
+foreign import ccall unsafe "mysql_options" mysql_options_
  :: Ptr MYSQL
  -> CInt
  -> Ptr ()
  -> IO CInt
 
-foreign import ccall unsafe mysql_real_connect
+foreign import ccall unsafe "mysql_real_connect" mysql_real_connect_
  :: Ptr MYSQL -- the context
  -> CString   -- hostname
  -> CString   -- username
@@ -1028,64 +1025,64 @@ foreign import ccall unsafe mysql_real_connect
  -> CString   -- unix socket
  -> IO (Ptr MYSQL)
 
-foreign import ccall unsafe "&mysql_close" mysql_close
+foreign import ccall unsafe "&mysql_close" mysql_close_
     :: FunPtr (Ptr MYSQL -> IO ())
 
-foreign import ccall unsafe mysql_stmt_init
+foreign import ccall unsafe "mysql_stmt_init" mysql_stmt_init_
     :: Ptr MYSQL -> IO (Ptr MYSQL_STMT)
 
-foreign import ccall unsafe mysql_stmt_prepare
+foreign import ccall unsafe "mysql_stmt_prepare" mysql_stmt_prepare_
     :: Ptr MYSQL_STMT -> CString -> CInt -> IO CInt
 
-foreign import ccall unsafe mysql_stmt_result_metadata
+foreign import ccall unsafe "mysql_stmt_result_metadata" mysql_stmt_result_metadata_
     :: Ptr MYSQL_STMT -> IO (Ptr MYSQL_RES)
 
-foreign import ccall unsafe mysql_stmt_bind_param
+foreign import ccall unsafe "mysql_stmt_bind_param" mysql_stmt_bind_param_
     :: Ptr MYSQL_STMT -> Ptr MYSQL_BIND -> IO CChar
 
-foreign import ccall unsafe mysql_stmt_bind_result
+foreign import ccall unsafe "mysql_stmt_bind_result" mysql_stmt_bind_result_
     :: Ptr MYSQL_STMT -> Ptr MYSQL_BIND -> IO CChar
 
-foreign import ccall unsafe mysql_stmt_param_count
+foreign import ccall unsafe "mysql_stmt_param_count" mysql_stmt_param_count_
     :: Ptr MYSQL_STMT -> IO CULong
 
-foreign import ccall unsafe mysql_free_result
+foreign import ccall unsafe "mysql_free_result" mysql_free_result_
     :: Ptr MYSQL_RES -> IO ()
 
-foreign import ccall unsafe mysql_stmt_execute
+foreign import ccall unsafe "mysql_stmt_execute" mysql_stmt_execute_
     :: Ptr MYSQL_STMT -> IO CInt
 
-foreign import ccall unsafe mysql_stmt_affected_rows
+foreign import ccall unsafe "mysql_stmt_affected_rows" mysql_stmt_affected_rows_
     :: Ptr MYSQL_STMT -> IO CULLong
 
-foreign import ccall unsafe mysql_fetch_field
+foreign import ccall unsafe "mysql_fetch_field" mysql_fetch_field_
     :: Ptr MYSQL_RES -> IO (Ptr MYSQL_FIELD)
 
-foreign import ccall unsafe mysql_stmt_fetch
+foreign import ccall unsafe "mysql_stmt_fetch" mysql_stmt_fetch_
     :: Ptr MYSQL_STMT -> IO CInt
 
-foreign import ccall unsafe mysql_stmt_fetch_column
+foreign import ccall unsafe "mysql_stmt_fetch_column" mysql_stmt_fetch_column_
     :: Ptr MYSQL_STMT -> Ptr MYSQL_BIND -> CUInt -> CULong -> IO CInt
 
-foreign import ccall unsafe mysql_stmt_close
+foreign import ccall unsafe "mysql_stmt_close" mysql_stmt_close_
     :: Ptr MYSQL_STMT -> IO ()
 
-foreign import ccall unsafe mysql_stmt_errno
+foreign import ccall unsafe "mysql_stmt_errno" mysql_stmt_errno_
     :: Ptr MYSQL_STMT -> IO CInt
 
-foreign import ccall unsafe mysql_stmt_error
+foreign import ccall unsafe "mysql_stmt_error" mysql_stmt_error_
     :: Ptr MYSQL_STMT -> IO CString
 
-foreign import ccall unsafe mysql_errno
+foreign import ccall unsafe "mysql_errno" mysql_errno_
     :: Ptr MYSQL -> IO CInt
 
-foreign import ccall unsafe mysql_error
+foreign import ccall unsafe "mysql_error" mysql_error_
     :: Ptr MYSQL -> IO CString
 
-foreign import ccall unsafe mysql_autocommit
+foreign import ccall unsafe "mysql_autocommit" mysql_autocommit_
     :: Ptr MYSQL -> CChar -> IO CChar
 
-foreign import ccall unsafe mysql_query
+foreign import ccall unsafe "mysql_query" mysql_query_
     :: Ptr MYSQL -> CString -> IO CInt
 
 foreign import ccall unsafe memset
